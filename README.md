@@ -169,7 +169,7 @@ Please make sure to update tests as appropriate and adhere to the existing codin
 ## Contact & Support
 
 - **Creator**: [Zeeshan Jagirdar](https://github.com/heyzeeshan)
-- **LinkedIn**: [Connect with me](https://www.linkedin.com/in/your-linkedin-profile/)
+- **LinkedIn**: [Connect with me](https://www.linkedin.com/in/heyzeeshan/)
 - **Report Issues**: [GitHub Issues](https://github.com/heyzeeshan/odoo-quick-login/issues)
 
 If you find this extension useful, please consider:
