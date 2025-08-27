@@ -1,4 +1,16 @@
 // content.js
+/**
+ * Odoo Quick Login - Content Script
+ * 
+ * This script is injected into all web pages and does the following:
+ * 1. Detects Odoo login pages
+ * 2. Retrieves saved user credentials for the specific Odoo instance
+ * 3. Creates and injects a Material UI styled dropdown menu
+ * 4. Handles user selection to auto-fill and submit login forms
+ * 
+ * The script includes error handling to gracefully handle Chrome extension
+ * context invalidation and other potential runtime errors.
+ */
 
 // Check if extension context is valid before initializing
 let extensionContextValid = true;
@@ -12,7 +24,16 @@ try {
   console.error('Extension context invalid:', error);
 }
 
-// Helper to detect Odoo instance key
+/**
+ * Generates a unique key to identify different Odoo instances
+ * 
+ * The function attempts multiple methods to identify an Odoo instance:
+ * 1. Database name from input field (most specific)
+ * 2. Generator meta tag content (contains Odoo version)
+ * 3. Page origin as fallback (least specific)
+ * 
+ * @returns {string} A unique identifier for the current Odoo instance
+ */
 function detectOdooInstanceKey() {
   const dbInput = document.querySelector('input[name="db"]');
   if (dbInput && dbInput.value) return 'db:' + dbInput.value;
@@ -21,7 +42,12 @@ function detectOdooInstanceKey() {
   return 'origin:' + window.location.origin;
 }
 
-// Helper to get users for an Odoo instance
+/**
+ * Retrieves saved users for a specific Odoo instance
+ * 
+ * @param {string} instanceKey - The unique identifier for the Odoo instance
+ * @param {Function} cb - Callback function that receives the array of users
+ */
 function getUsersForInstance(instanceKey, cb) {
   try {
     chrome.storage.local.get({usersByInstance: {}}, (data) => {
@@ -38,6 +64,15 @@ function getUsersForInstance(instanceKey, cb) {
   }
 }
 
+/**
+ * Determines if the current page is an Odoo login page
+ * 
+ * Uses multiple detection methods to identify Odoo login pages:
+ * 1. Presence of login form with proper action URL
+ * 2. Odoo generator meta tag
+ * 
+ * @returns {boolean} True if the current page is an Odoo login page
+ */
 function isOdooLoginPage() {
   const loginInput = document.querySelector('input[name="login"]');
   const passwordInput = document.querySelector('input[name="password"]');
@@ -51,6 +86,20 @@ function isOdooLoginPage() {
   }
   return false;
 }
+
+/**
+ * Creates and injects the user selection dropdown into Odoo login pages
+ * 
+ * This is the main function that:
+ * 1. Verifies we're on an Odoo login page
+ * 2. Creates a Material UI styled dropdown
+ * 3. Populates it with saved users for this instance
+ * 4. Handles selection events to auto-fill credentials
+ * 5. Positions the dropdown appropriately on the page
+ * 
+ * The function includes multiple fallback strategies for positioning
+ * and error handling to ensure graceful operation in various scenarios.
+ */
 function insertUserButtons() {
   try {
     // Check if extension context is still valid
@@ -62,6 +111,8 @@ function insertUserButtons() {
     if (!isOdooLoginPage()) return;
     const usernameInput = document.querySelector('input[name="login"]');
     if (!usernameInput) {
+      // If login input not found, retry after a short delay
+      // This handles cases where the page is still loading
       setTimeout(function() {
         try {
           insertUserButtons();

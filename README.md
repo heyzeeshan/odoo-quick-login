@@ -106,6 +106,24 @@ Unlike other solutions that offer only fixed login buttons (admin, portal, guest
 - **content.js**: Content script that injects the dropdown into Odoo login pages
 - **detect_odoo.js**: Helper script for detecting Odoo instances
 - **icon.png**: Extension icon
+- **MANIFEST_NOTES.md**: Documentation for the manifest.json file
+
+### Code Structure
+
+The extension follows a modular design pattern:
+
+```
+content.js         # Main content script injected into web pages
+│                  # Handles dropdown creation and form auto-fill
+│
+popup.js           # Controls the extension popup UI
+│                  # Manages user storage and deletion
+│
+detect_odoo.js     # Shared utility for Odoo instance detection
+│                  # Used by both content.js and popup.js
+│
+manifest.json      # Extension configuration
+```
 
 ### Storage
 
