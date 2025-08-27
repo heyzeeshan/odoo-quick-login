@@ -1,0 +1,27 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependencies
+node_modules/
+
+# Build directories
+dist/
+build/
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Chrome Extension build files
+*.zip
+*.crx
+*.pem
+
+# Environment files
+.env
+.env.local
